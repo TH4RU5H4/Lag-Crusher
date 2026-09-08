@@ -257,7 +257,7 @@ function PingerScreen() {
           <div className="panel mt-2 max-h-64 overflow-y-auto">
             {beats.length === 0 ? (
               <p className="text-muted-foreground p-4 text-sm">
-                No pings yet. Unleash your Stand.
+                No pings yet. Unleash your Crusher.
               </p>
             ) : (
               beats.map((b, i) => (
