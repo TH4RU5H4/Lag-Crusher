@@ -193,30 +193,32 @@ function PingerScreen() {
 
         {/* Control center */}
         <section className="relative mt-9 flex flex-col items-center">
-          {running && (
-            <div className="speedlines animate-aura pointer-events-none absolute -top-10 h-80 w-80 rounded-full opacity-30" />
-          )}
-          <button
-            type="button"
-            disabled={!target}
-            onClick={(e) => {
-              drama(e, { text: running ? "やれやれだぜ" : "ゴゴゴゴ", shake: true });
-              setRunning((r) => !r);
-            }}
-            className={`relative z-10 flex h-44 w-44 flex-col items-center justify-center rounded-full border-[5px] border-black text-center transition-transform active:scale-90 disabled:opacity-40 ${
-              running ? "bg-gold" : "bg-magenta"
-            }`}
-            style={{ boxShadow: "0 0 0 6px var(--paper), var(--shadow-glow)" }}
-          >
-            <span className="font-display text-ink text-2xl leading-6">
-              {running ? "STOP" : "START"}
-              <br />
-              {running ? "CRUSHER" : "CRUSHER"}
-            </span>
-            <span className="font-jp text-ink/80 mt-1 text-[10px] font-black">
-              {running ? "スタンド解除" : "スタンドパワー"}
-            </span>
-          </button>
+          <div className="relative flex items-center justify-center">
+            {running && (
+              <div className="speedlines animate-aura pointer-events-none absolute h-80 w-80 rounded-full opacity-30" />
+            )}
+            <button
+              type="button"
+              disabled={!target}
+              onClick={(e) => {
+                drama(e, { text: running ? "やれやれだぜ" : "ゴゴゴゴ", shake: true });
+                setRunning((r) => !r);
+              }}
+              className={`relative z-10 flex h-44 w-44 flex-col items-center justify-center rounded-full border-[5px] border-black text-center transition-transform active:scale-90 disabled:opacity-40 ${
+                running ? "bg-gold" : "bg-magenta"
+              }`}
+              style={{ boxShadow: "0 0 0 6px var(--paper), var(--shadow-glow)" }}
+            >
+              <span className="font-display text-ink text-2xl leading-6">
+                {running ? "STOP" : "START"}
+                <br />
+                {running ? "CRUSHER" : "CRUSHER"}
+              </span>
+              <span className="font-jp text-ink/80 mt-1 text-[10px] font-black">
+                {running ? "スタンド解除" : "スタンドパワー"}
+              </span>
+            </button>
+          </div>
 
           <div className="panel mt-6 flex w-full items-center gap-3 px-4 py-3">
             <span
