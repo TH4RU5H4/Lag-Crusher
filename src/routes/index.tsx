@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { JojoFxProvider, useDramatic } from "@/lib/jojo-fx";
+import { JojoFxProvider, useDramatic, useJojoFx } from "@/lib/jojo-fx";
 import { JojoSelect, type Option } from "@/components/JojoSelect";
 
 export const Route = createFileRoute("/")({
