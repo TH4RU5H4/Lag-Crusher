@@ -46,6 +46,7 @@ type Beat = { id: number; ms: number | null; at: string };
 
 function PingerScreen() {
   const drama = useDramatic();
+  const { burst } = useJojoFx();
   const [provider, setProvider] = useState("dialog");
   const [interval, setInterval_] = useState("3000");
   const [customUrl, setCustomUrl] = useState("");
