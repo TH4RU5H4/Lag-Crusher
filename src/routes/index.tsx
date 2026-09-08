@@ -195,7 +195,7 @@ function PingerScreen() {
         <section className="relative mt-9 flex flex-col items-center">
           <div className="relative flex items-center justify-center">
             {running && (
-              <div className="speedlines animate-aura pointer-events-none absolute h-80 w-80 rounded-full opacity-30" />
+              <div className="speedlines animate-aura pointer-events-none absolute top-1/2 left-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30" />
             )}
             <button
               type="button"
