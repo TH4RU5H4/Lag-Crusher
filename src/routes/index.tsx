@@ -280,7 +280,7 @@ function PingerScreen() {
         </section>
 
         <p className="text-paper/40 font-jp mt-8 text-center text-[10px]">
-          ゴゴゴ · Keep the app open to hold the connection.
+          ゴゴゴ · Keep the app open in the background to hold the connection.
         </p>
       </div>
     </main>
