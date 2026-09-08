@@ -211,7 +211,7 @@ function PingerScreen() {
             <span className="font-display text-ink text-2xl leading-6">
               {running ? "STOP" : "START"}
               <br />
-              {running ? "STAND" : "PING"}
+              {running ? "CRUSHER" : "CRUSHER"}
             </span>
             <span className="font-jp text-ink/80 mt-1 text-[10px] font-black">
               {running ? "スタンド解除" : "スタンドパワー"}
