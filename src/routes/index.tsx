@@ -104,6 +104,19 @@ function PingerScreen() {
     };
   }, [running, target, interval, ping]);
 
+  // Random floating Japanese SFX while Crusher is running
+  useEffect(() => {
+    if (!running) return;
+    const spawn = () => {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      burst(x, y);
+    };
+    spawn();
+    const id = setInterval(spawn, 900);
+    return () => clearInterval(id);
+  }, [running, burst]);
+
   const latest = beats[0];
   const alive = beats.filter((b) => b.ms !== null);
   const avg = alive.length
