@@ -46,7 +46,7 @@ type Beat = { id: number; ms: number | null; at: string };
 
 function PingerScreen() {
   const drama = useDramatic();
-  const { burst } = useJojoFx();
+  const { backBurst } = useJojoFx();
   const [provider, setProvider] = useState("dialog");
   const [interval, setInterval_] = useState("3000");
   const [customUrl, setCustomUrl] = useState("");
@@ -104,18 +104,18 @@ function PingerScreen() {
     };
   }, [running, target, interval, ping]);
 
-  // Random floating Japanese SFX while Crusher is running
+  // Random floating Japanese SFX across the background while Crusher is running
   useEffect(() => {
     if (!running) return;
     const spawn = () => {
       const x = Math.random() * window.innerWidth;
       const y = Math.random() * window.innerHeight;
-      burst(x, y);
+      backBurst(x, y);
     };
     spawn();
     const id = setInterval(spawn, 900);
     return () => clearInterval(id);
-  }, [running, burst]);
+  }, [running, backBurst]);
 
   const latest = beats[0];
   const alive = beats.filter((b) => b.ms !== null);
