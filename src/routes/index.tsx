@@ -6,13 +6,13 @@ import { JojoSelect, type Option } from "@/components/JojoSelect";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stand Pinger — JoJo Mobile Net Stabilizer for Sri Lanka" },
+      { title: "LagCrusher — powered by TH4RU5H4" },
       {
         name: "description",
         content:
-          "Stabilize Dialog, Mobitel, Hutch and Airtel mobile internet with a looping pinger. Pick a provider or custom URL, set the interval, and unleash Stand Power.",
+          "Crush lag on Dialog, Mobitel, Hutch and Airtel mobile internet with a looping pinger. Pick a provider or custom URL, set the interval, and unleash Stand Power.",
       },
-      { property: "og:title", content: "Stand Pinger — JoJo Mobile Net Stabilizer" },
+      { property: "og:title", content: "LagCrusher — powered by TH4RU5H4" },
       {
         property: "og:description",
         content:
@@ -129,14 +129,14 @@ function PingerScreen() {
       <div className="relative mx-auto w-full max-w-md px-5 pt-8">
         {/* Header */}
         <header className="animate-stamp">
-          <p className="font-slab text-cyan text-xl tracking-[0.5em] uppercase">Z / Stand</p>
+          <p className="font-slab text-cyan text-xl tracking-[0.5em] uppercase">TH4RU5H4</p>
           <h1 className="jojo-title text-5xl leading-[0.85]">
-            Stand
+            Lag
             <br />
-            Pinger
+            Crusher
           </h1>
           <p className="text-paper/70 font-jp mt-3 text-xs">
-            スタンド発現 · Sri Lanka mobile net stabilizer
+            ラグ粉砕 · Sri Lanka mobile net stabilizer
           </p>
         </header>
 
