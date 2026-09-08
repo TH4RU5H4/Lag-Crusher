@@ -14,7 +14,11 @@ const COLORS: string[] = ["text-magenta", "text-cyan", "text-gold"];
 
 type Fx = { id: number; x: number; y: number; text: string; color: string; rot: number };
 
-type FxApi = { burst: (x: number, y: number, text?: string) => void; shake: () => void };
+type FxApi = {
+  burst: (x: number, y: number, text?: string) => void;
+  backBurst: (x: number, y: number, text?: string) => void;
+  shake: () => void;
+};
 
 const FxContext = createContext<FxApi>({ burst: () => {}, shake: () => {} });
 
