@@ -1,7 +1,16 @@
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
 
-const SFX = ["ゴゴゴゴ", "ドドドド", "ドドド", "メメタァ", "ズキュゥゥン", "オラオラ", "無駄無駄"];
-const COLORS = ["text-magenta", "text-cyan", "text-gold"];
+const SFX: string[] = [
+  "ゴゴゴゴ",
+  "ドドドド",
+  "ドドド",
+  "メメタァ",
+  "ズキュゥゥン",
+  "オラオラ",
+  "無駄無駄",
+];
+const COLORS: string[] = ["text-magenta", "text-cyan", "text-gold"];
+
 
 type Fx = { id: number; x: number; y: number; text: string; color: string; rot: number };
 
