@@ -129,12 +129,14 @@ function PingerScreen() {
       <div className="relative mx-auto w-full max-w-md px-5 pt-8">
         {/* Header */}
         <header className="animate-stamp">
-          <p className="font-slab text-cyan text-xl tracking-[0.5em] uppercase">TH4RU5H4</p>
           <h1 className="jojo-title text-5xl leading-[0.85]">
             Lag
             <br />
             Crusher
           </h1>
+          <p className="font-slab text-cyan mt-2 text-lg tracking-[0.25em] uppercase">
+            powered by TH4RU5H4
+          </p>
           <p className="text-paper/70 font-jp mt-3 text-xs">
             ラグ粉砕 · Sri Lanka mobile net stabilizer
           </p>
