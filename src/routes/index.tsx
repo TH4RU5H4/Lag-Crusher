@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { JojoFxProvider, useDramatic } from "@/lib/jojo-fx";
+import { JojoFxProvider, useDramatic, useJojoFx } from "@/lib/jojo-fx";
 import { JojoSelect, type Option } from "@/components/JojoSelect";
 
 export const Route = createFileRoute("/")({
@@ -46,6 +46,7 @@ type Beat = { id: number; ms: number | null; at: string };
 
 function PingerScreen() {
   const drama = useDramatic();
+  const { burst } = useJojoFx();
   const [provider, setProvider] = useState("dialog");
   const [interval, setInterval_] = useState("3000");
   const [customUrl, setCustomUrl] = useState("");
@@ -102,6 +103,19 @@ function PingerScreen() {
       if (timer.current) clearTimeout(timer.current);
     };
   }, [running, target, interval, ping]);
+
+  // Random floating Japanese SFX while Crusher is running
+  useEffect(() => {
+    if (!running) return;
+    const spawn = () => {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      burst(x, y);
+    };
+    spawn();
+    const id = setInterval(spawn, 900);
+    return () => clearInterval(id);
+  }, [running, burst]);
 
   const latest = beats[0];
   const alive = beats.filter((b) => b.ms !== null);
