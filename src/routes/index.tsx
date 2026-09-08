@@ -226,7 +226,7 @@ function PingerScreen() {
             />
             <span className="min-w-0 flex-1">
               <span className="font-display block truncate text-sm">
-                {running ? "STAND ACTIVE — LOOPING" : "STAND DORMANT"}
+                {running ? "CRUSHER ACTIVE — LOOPING" : "CRUSHER DORMANT"}
               </span>
               <span className="text-muted-foreground block truncate text-xs">
                 {target || "Set a target URL"}
