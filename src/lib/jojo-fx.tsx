@@ -47,8 +47,9 @@ export function JojoFxProvider({ children }: { children: ReactNode }) {
         id,
         x,
         y,
-        text: text ?? SFX[Math.floor(Math.random() * SFX.length)],
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        text: text ?? SFX[Math.floor(Math.random() * SFX.length)] ?? "ゴゴゴゴ",
+        color: COLORS[Math.floor(Math.random() * COLORS.length)] ?? "text-magenta",
+
         rot: Math.random() * 24 - 12,
       },
     ]);
