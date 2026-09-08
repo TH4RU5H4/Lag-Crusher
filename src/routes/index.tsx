@@ -134,7 +134,7 @@ function PingerScreen() {
             <br />
             Crusher
           </h1>
-          <p className="font-slab text-cyan mt-2 text-lg tracking-[0.25em] uppercase">
+          <p className="font-slab text-cyan mt-2 text-right text-sm tracking-[0.2em] uppercase">
             powered by TH4RU5H4
           </p>
           <p className="text-paper/70 font-jp mt-3 text-xs">
