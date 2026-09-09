@@ -16,6 +16,10 @@ dist-ssr
 .nitro
 *.local
 
+# Rust / Tauri
+src-tauri/target/
+build-output/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
@@ -30,3 +34,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets
+release-key.jks
