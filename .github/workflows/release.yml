@@ -63,8 +63,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2"
       - name: Build desktop
-        run: bun run tauri build
+        run: cargo tauri build
       - name: Upload Linux artifacts
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
@@ -101,13 +103,15 @@ jobs:
       - name: Decode keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release-key.jks
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2"
       - name: Build Android APK
         env:
           ANDROID_KEYSTORE_PATH: release-key.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: bun run tauri android build -- --签名
+        run: cargo tauri android build -- --签名
       - name: Upload Android artifacts
         uses: actions/upload-artifact@v4
         with:
