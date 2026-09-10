@@ -4,6 +4,7 @@ import { JojoFxProvider, useDramatic, useJojoFx } from "@/lib/jojo-fx";
 import { JojoSelect, type Option } from "@/components/JojoSelect";
 import { calcAverage, calcLoss, connectionQuality, QUALITY_LABELS } from "@/lib/stats";
 import { pingWithFallback } from "@/lib/ping";
+import { invoke } from "@tauri-apps/api/core";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -117,6 +118,10 @@ function PingerScreen() {
       const id = ++seq.current;
       setBeats((prev) => [{ id, ms, at: new Date().toLocaleTimeString() }, ...prev.slice(0, 24)]);
       setCount((c) => c + 1);
+      invoke("update_notification", {
+        latency: ms === null ? "LOST" : String(ms),
+        pingCount: String(seq.current),
+      }).catch(() => {});
       timer.current = setTimeout(loop, Number(intervalRef.current));
     };
 
@@ -125,6 +130,7 @@ function PingerScreen() {
     return () => {
       alive = false;
       if (timer.current) clearTimeout(timer.current);
+      invoke("stop_crusher").catch(() => {});
     };
   }, [running, getTargets]);
 
@@ -232,7 +238,13 @@ function PingerScreen() {
               disabled={!target}
               onClick={(e) => {
                 drama(e, { text: running ? "やれやれだぜ" : "ゴゴゴゴ", shake: true });
-                setRunning((r) => !r);
+                const next = !running;
+                setRunning(next);
+                if (next) {
+                  invoke("start_crusher").catch(() => {});
+                } else {
+                  invoke("stop_crusher").catch(() => {});
+                }
               }}
               className={`relative z-10 flex h-44 w-44 flex-col items-center justify-center rounded-full border-[5px] border-black text-center transition-transform active:scale-90 disabled:opacity-40 ${
                 running ? "bg-gold" : "bg-magenta"

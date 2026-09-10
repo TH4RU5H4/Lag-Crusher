@@ -5,7 +5,7 @@ export async function pingUrl(url: string): Promise<number | null> {
   const start = performance.now();
   try {
     await fetch(`${url}${url.includes("?") ? "&" : "?"}_z=${Date.now()}`, {
-      mode: "no-cors",
+      mode: "cors",
       cache: "no-store",
       signal: controller.signal,
     });
