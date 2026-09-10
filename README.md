@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  A menacing pinger UI for Sri Lankan mobile networks — crush lag with Stand Power.
+  A menacing pinger UI for Sri Lankan mobile networks.
 </p>
 
 ---
