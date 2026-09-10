@@ -1,4 +1,4 @@
-<h1 align="center">Lag Crusher — JoJo-Themed Internet Stabilizer</h1>
+<h1 align="center">Lag Crusher — Internet Stabilizer</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-19-61DAFB.svg?logo=react" alt="React">
