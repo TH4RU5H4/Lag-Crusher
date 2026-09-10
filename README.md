@@ -151,7 +151,3 @@ npm run preview      # Preview production build
 MIT License — see [LICENSE](LICENSE) for details.
 
 ---
-
-<p align="center">
-  <sub>ゴゴゴ · Keep the app open in the background to hold the connection.</sub>
-</p>
