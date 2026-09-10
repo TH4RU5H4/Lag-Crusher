@@ -1,6 +1,6 @@
 [package]
 name = "lag-crusher"
-version = "1.1.3"
+version = "1.2.0"
 description = "Lag Crusher"
 authors = ["TH4RU5H4"]
 edition = "2021"
