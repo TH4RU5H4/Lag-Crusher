@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use tauri::Manager;
 
 #[tauri::command]
 pub fn greet(name: &str) -> String {
