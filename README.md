@@ -186,16 +186,6 @@ No environment variables are required. Custom endpoints and interval preferences
 | Tauri | 2 | Android native wrapper |
 | Vitest | 3.2 | Testing |
 
-<p>
-  <img src="https://img.shields.io/badge/React-19.2-61DAFB.svg?logo=react&logoColor=white" alt="React 19.2">
-  <img src="https://img.shields.io/badge/TypeScript-5.8-3178C6.svg?logo=typescript&logoColor=white" alt="TypeScript 5.8">
-  <img src="https://img.shields.io/badge/TanStack_Router-1.170-EF4444.svg" alt="TanStack Router 1.170">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-4.2-06B6D4.svg?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4.2">
-  <img src="https://img.shields.io/badge/Vite-8-646CFF.svg?logo=vite&logoColor=white" alt="Vite 8">
-  <img src="https://img.shields.io/badge/Tauri-2-24C8DB.svg?logo=tauri&logoColor=white" alt="Tauri 2">
-  <img src="https://img.shields.io/badge/Vitest-3.2-6E9F18.svg?logo=vitest&logoColor=white" alt="Vitest 3.2">
-</p>
-
 ## Downloads
 
 No npm package is published. Install from source or download Android binaries:
