@@ -17,7 +17,7 @@
 
 ## Purpose
 
-Lag Crusher is a mobile-first web app that stabilizes internet connections on Sri Lankan mobile networks (Dialog, Mobitel, Hutch, Airtel) by continuously pinging optimized provider endpoints. Built with a heavy JoJo's Bizarre Adventure aesthetic — dramatic typography, halftone patterns, and Japanese sound effects.
+Lag Crusher is a mobile app that stabilizes internet connections on Sri Lankan mobile networks (Dialog, Mobitel, Hutch, Airtel) by continuously pinging optimized provider endpoints. Built with a heavy JoJo themed aesthetic — dramatic typography, halftone patterns, and Japanese SFX effects.
 
 ## Structure
 
