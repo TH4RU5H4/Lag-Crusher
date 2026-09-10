@@ -60,8 +60,8 @@ lag-crusher/
 ## Getting Started
 
 ```sh
-git clone https://github.com/TH4RU5H4/stand-power-pinger.git
-cd stand-power-pinger
+git clone https://github.com/TH4RU5H4/Lag-Crusher.git
+cd Lag-Crusher
 npm install
 npm run dev
 ```
@@ -105,12 +105,12 @@ npm run preview      # Preview production build
 
 ## Configuration
 
-| File | Purpose |
-|------|---------|
-| `vite.config.ts` | Vite + TanStack Start configuration |
-| `tsconfig.json` | TypeScript compiler options (strict mode) |
-| `eslint.config.js` | ESLint rules + Prettier integration |
-| `components.json` | shadcn/ui component configuration |
+| File               | Purpose                                   |
+| ------------------ | ----------------------------------------- |
+| `vite.config.ts`   | Vite + TanStack Start configuration       |
+| `tsconfig.json`    | TypeScript compiler options (strict mode) |
+| `eslint.config.js` | ESLint rules + Prettier integration       |
+| `components.json`  | shadcn/ui component configuration         |
 
 ## Architecture
 
@@ -123,22 +123,22 @@ npm run preview      # Preview production build
 
 ## Tech Stack
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| React | 19.2 | UI framework |
-| TypeScript | 5.8 | Type safety |
-| TanStack Start | 1.168 | Full-stack React framework |
-| TanStack Router | 1.170 | Client-side routing |
-| Tailwind CSS | 4.2 | Utility-first styling |
-| Vite | 8 | Build tool |
-| Radix UI | Various | Accessible primitives |
-| Zod | 3.25 | Schema validation |
-| Lucide React | 0.575 | Icons |
+| Technology      | Version | Purpose                    |
+| --------------- | ------- | -------------------------- |
+| React           | 19.2    | UI framework               |
+| TypeScript      | 5.8     | Type safety                |
+| TanStack Start  | 1.168   | Full-stack React framework |
+| TanStack Router | 1.170   | Client-side routing        |
+| Tailwind CSS    | 4.2     | Utility-first styling      |
+| Vite            | 8       | Build tool                 |
+| Radix UI        | Various | Accessible primitives      |
+| Zod             | 3.25    | Schema validation          |
+| Lucide React    | 0.575   | Icons                      |
 
 ## Links
 
-- [GitHub Repository](https://github.com/TH4RU5H4/stand-power-pinger)
-- [Issue Tracker](https://github.com/TH4RU5H4/stand-power-pinger/issues)
+- [GitHub Repository](https://github.com/TH4RU5H4/Lag-Crusher)
+- [Issue Tracker](https://github.com/TH4RU5H4/Lag-Crusher/issues)
 
 ## Credits
 
