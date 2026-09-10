@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="public/favicon.ico" alt="Lag Crusher" width="120">
-</p>
-
 <h1 align="center">Lag Crusher — Internet Stabilizer</h1>
 
 <p align="center">
