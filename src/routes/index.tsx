@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { JojoFxProvider, useDramatic, useJojoFx } from "@/lib/jojo-fx";
 import { JojoSelect, type Option } from "@/components/JojoSelect";
+import { calcAverage, calcLoss, connectionQuality, QUALITY_LABELS } from "@/lib/stats";
+import { pingWithFallback } from "@/lib/ping";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,12 +29,34 @@ export const Route = createFileRoute("/")({
   ),
 });
 
-const PROVIDERS: (Option & { url: string })[] = [
-  { value: "dialog", label: "Dialog", sub: "Dialog Axiata · optimized node", url: "https://www.dialog.lk/favicon.ico" },
-  { value: "mobitel", label: "Mobitel", sub: "SLT-Mobitel · optimized node", url: "https://www.mobitel.lk/favicon.ico" },
-  { value: "hutch", label: "Hutch", sub: "Hutchison · optimized node", url: "https://www.hutch.lk/favicon.ico" },
-  { value: "airtel", label: "Airtel", sub: "Airtel Lanka · optimized node", url: "https://www.airtel.lk/favicon.ico" },
-  { value: "custom", label: "Custom URL", sub: "Your own address", url: "" },
+type ProviderOption = Option & { urls: string[] };
+
+const PROVIDERS: ProviderOption[] = [
+  {
+    value: "dialog",
+    label: "Dialog",
+    sub: "Dialog Axiata · optimized nodes",
+    urls: ["https://www.dialog.lk/favicon.ico", "https://www.dialog.lk/media/images/favicon.png"],
+  },
+  {
+    value: "mobitel",
+    label: "Mobitel",
+    sub: "SLT-Mobitel · optimized nodes",
+    urls: ["https://www.mobitel.lk/favicon.ico", "https://www.mobitel.lk/media/favicon.ico"],
+  },
+  {
+    value: "hutch",
+    label: "Hutch",
+    sub: "Hutchison · optimized nodes",
+    urls: ["https://www.hutch.lk/favicon.ico", "https://www.hutch.lk/favicon.png"],
+  },
+  {
+    value: "airtel",
+    label: "Airtel",
+    sub: "Airtel Lanka · optimized nodes",
+    urls: ["https://www.airtel.lk/favicon.ico", "https://www.airtel.lk/images/favicon.png"],
+  },
+  { value: "custom", label: "Custom URL", sub: "Your own address", urls: [] },
 ];
 
 const INTERVALS: Option[] = [
@@ -56,6 +80,11 @@ function PingerScreen() {
   const [count, setCount] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const seq = useRef(0);
+  const intervalRef = useRef("3000");
+
+  useEffect(() => {
+    intervalRef.current = interval;
+  }, [interval]);
 
   useEffect(() => {
     const stored = localStorage.getItem("stand-pinger-url");
@@ -65,46 +94,40 @@ function PingerScreen() {
     }
   }, []);
 
-  const target =
-    provider === "custom"
-      ? savedUrl || customUrl
-      : (PROVIDERS.find((p) => p.value === provider)?.url ?? "");
-
-  const ping = useCallback(async (url: string) => {
-    const start = performance.now();
-    try {
-      await fetch(`${url}${url.includes("?") ? "&" : "?"}_z=${Date.now()}`, {
-        mode: "no-cors",
-        cache: "no-store",
-      });
-      return Math.round(performance.now() - start);
-    } catch {
-      return null;
+  const getTargets = useCallback((): string[] => {
+    if (provider === "custom") {
+      const url = savedUrl || customUrl;
+      return url ? [url] : [];
     }
-  }, []);
+    const p = PROVIDERS.find((p) => p.value === provider);
+    return p?.urls ?? [];
+  }, [provider, savedUrl, customUrl]);
 
   useEffect(() => {
-    if (!running || !target) return;
+    if (!running) return;
+    const targets = getTargets();
+    if (targets.length === 0) return;
+
     let alive = true;
+
     const loop = async () => {
-      const ms = await ping(target);
+      if (!alive) return;
+      const ms = await pingWithFallback(targets);
       if (!alive) return;
       const id = ++seq.current;
-      setBeats((prev) => [
-        { id, ms, at: new Date().toLocaleTimeString() },
-        ...prev.slice(0, 24),
-      ]);
+      setBeats((prev) => [{ id, ms, at: new Date().toLocaleTimeString() }, ...prev.slice(0, 24)]);
       setCount((c) => c + 1);
-      timer.current = setTimeout(loop, Number(interval));
+      timer.current = setTimeout(loop, Number(intervalRef.current));
     };
+
     loop();
+
     return () => {
       alive = false;
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [running, target, interval, ping]);
+  }, [running, getTargets]);
 
-  // Random floating Japanese SFX across the background while Crusher is running
   useEffect(() => {
     if (!running) return;
     const spawn = () => {
@@ -118,15 +141,13 @@ function PingerScreen() {
   }, [running, backBurst]);
 
   const latest = beats[0];
-  const alive = beats.filter((b) => b.ms !== null);
-  const avg = alive.length
-    ? Math.round(alive.reduce((s, b) => s + (b.ms ?? 0), 0) / alive.length)
-    : null;
-  const loss = beats.length ? Math.round(((beats.length - alive.length) / beats.length) * 100) : 0;
+  const avg = calcAverage(beats);
+  const loss = calcLoss(beats);
+  const quality = connectionQuality(latest?.ms, navigator.onLine);
+  const target = getTargets()[0] ?? "";
 
   return (
     <main className="inkwash relative min-h-screen overflow-hidden pb-16">
-      {/* halftone + rumble background */}
       <div className="halftone pointer-events-none absolute inset-0 opacity-[0.12]" />
       <div className="pointer-events-none absolute inset-0 flex flex-col justify-around overflow-hidden opacity-20">
         {[0, 1, 2, 3].map((i) => (
@@ -141,7 +162,6 @@ function PingerScreen() {
       </div>
 
       <div className="relative mx-auto w-full max-w-md px-5 pt-8">
-        {/* Header */}
         <header className="animate-stamp">
           <h1 className="jojo-title text-5xl leading-[0.85]">
             Lag
@@ -156,7 +176,6 @@ function PingerScreen() {
           </p>
         </header>
 
-        {/* Controls */}
         <section className="mt-7 space-y-5">
           <JojoSelect
             label="Service Provider"
@@ -190,9 +209,7 @@ function PingerScreen() {
               >
                 Save Address
               </button>
-              {savedUrl && (
-                <p className="text-gold mt-2 truncate text-xs">SAVED · {savedUrl}</p>
-              )}
+              {savedUrl && <p className="text-gold mt-2 truncate text-xs">SAVED · {savedUrl}</p>}
             </div>
           )}
 
@@ -205,7 +222,6 @@ function PingerScreen() {
           />
         </section>
 
-        {/* Control center */}
         <section className="relative mt-9 flex flex-col items-center">
           <div className="relative flex items-center justify-center">
             {running && (
@@ -226,7 +242,7 @@ function PingerScreen() {
               <span className="font-display text-ink text-2xl leading-6">
                 {running ? "STOP" : "START"}
                 <br />
-                {running ? "CRUSHER" : "CRUSHER"}
+                CRUSHER
               </span>
               <span className="font-jp text-ink/80 mt-1 text-[10px] font-black">
                 {running ? "スタンド解除" : "スタンドパワー"}
@@ -237,12 +253,18 @@ function PingerScreen() {
           <div className="panel mt-6 flex w-full items-center gap-3 px-4 py-3">
             <span
               className={`h-4 w-4 shrink-0 border-2 border-black ${
-                running ? (latest?.ms === null ? "bg-destructive" : "bg-cyan animate-pulse") : "bg-muted"
+                running
+                  ? latest?.ms === null
+                    ? "bg-destructive"
+                    : "bg-cyan animate-pulse"
+                  : "bg-muted"
               }`}
             />
             <span className="min-w-0 flex-1">
               <span className="font-display block truncate text-sm">
-                {running ? "CRUSHER ACTIVE — LOOPING" : "CRUSHER DORMANT"}
+                {running
+                  ? `CRUSHER ACTIVE — ${QUALITY_LABELS[quality].toUpperCase()}`
+                  : "CRUSHER DORMANT"}
               </span>
               <span className="text-muted-foreground block truncate text-xs">
                 {target || "Set a target URL"}
@@ -251,12 +273,12 @@ function PingerScreen() {
           </div>
         </section>
 
-        {/* Stats */}
-        <section className="mt-5 grid grid-cols-3 gap-3">
+        <section className="mt-5 grid grid-cols-4 gap-2">
           {[
             { k: "Latency", v: latest ? (latest.ms === null ? "LOST" : `${latest.ms}ms`) : "—" },
             { k: "Average", v: avg === null ? "—" : `${avg}ms` },
             { k: "Loss", v: `${loss}%` },
+            { k: "Quality", v: QUALITY_LABELS[quality] },
           ].map((s) => (
             <div key={s.k} className="panel px-2 py-3 text-center">
               <p className="font-display text-gold truncate text-lg">{s.v}</p>
@@ -265,7 +287,6 @@ function PingerScreen() {
           ))}
         </section>
 
-        {/* Log */}
         <section className="mt-6">
           <h2 className="font-slab text-paper/70 text-lg tracking-[0.35em] uppercase">
             Ping Log · {count}
