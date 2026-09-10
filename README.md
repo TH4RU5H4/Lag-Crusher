@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/logo.jpg" alt="Lag Crusher" width="300">
+</p>
+
 <h1 align="center">Lag Crusher — Internet Stabilizer</h1>
 
 <p align="center">
