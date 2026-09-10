@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.0 or v1.0.0)'
+        description: "Version number (e.g., 1.0.0 or v1.0.0)"
         required: true
         type: string
 
@@ -34,10 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Update Cargo.toml
+      - name: Update Cargo.toml and tauri.conf.json
         run: |
           VERSION="${{ needs.validate.outputs.version }}"
           sed -i "s/^version = \".*\"/version = \"$VERSION\"/" src-tauri/Cargo.toml
+          sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" src-tauri/tauri.conf.json
       - name: Commit and push
         id: commit
         run: |
@@ -67,6 +68,8 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev libgtk-3-dev
       - uses: oven-sh/setup-bun@v2
       - run: bun install
+      - name: Run tests
+        run: bun run test
       - uses: dtolnay/rust-toolchain@stable
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2"
@@ -104,6 +107,8 @@ jobs:
         uses: android-actions/setup-android@v3
       - uses: oven-sh/setup-bun@v2
       - run: bun install
+      - name: Run tests
+        run: bun run test
       - uses: dtolnay/rust-toolchain@stable
       - name: Add Android targets
         run: |

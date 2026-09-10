@@ -11,7 +11,6 @@ const SFX: string[] = [
 ];
 const COLORS: string[] = ["text-magenta", "text-cyan", "text-gold"];
 
-
 type Fx = { id: number; x: number; y: number; text: string; color: string; rot: number };
 
 type FxApi = {
@@ -60,17 +59,23 @@ export function JojoFxProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const burst = useCallback((x: number, y: number, text?: string) => {
-    const fx = spawn(x, y, text);
-    setFx((prev) => [...prev.slice(-6), fx]);
-    setTimeout(() => setFx((prev) => prev.filter((f) => f.id !== fx.id)), 1200);
-  }, [spawn]);
+  const burst = useCallback(
+    (x: number, y: number, text?: string) => {
+      const fx = spawn(x, y, text);
+      setFx((prev) => [...prev.slice(-6), fx]);
+      setTimeout(() => setFx((prev) => prev.filter((f) => f.id !== fx.id)), 1200);
+    },
+    [spawn],
+  );
 
-  const backBurst = useCallback((x: number, y: number, text?: string) => {
-    const fx = spawn(x, y, text);
-    setBackFx((prev) => [...prev.slice(-10), fx]);
-    setTimeout(() => setBackFx((prev) => prev.filter((f) => f.id !== fx.id)), 2200);
-  }, [spawn]);
+  const backBurst = useCallback(
+    (x: number, y: number, text?: string) => {
+      const fx = spawn(x, y, text);
+      setBackFx((prev) => [...prev.slice(-10), fx]);
+      setTimeout(() => setBackFx((prev) => prev.filter((f) => f.id !== fx.id)), 2200);
+    },
+    [spawn],
+  );
 
   const shake = useCallback(() => {
     setShaking(false);
@@ -82,7 +87,10 @@ export function JojoFxProvider({ children }: { children: ReactNode }) {
     list.map((f) => (
       <div key={f.id} className="absolute" style={{ left: f.x, top: f.y }}>
         <div className="absolute -translate-x-1/2 -translate-y-1/2">
-          <div className="speedlines animate-burst h-40 w-40 rounded-full" style={{ opacity: glowOpacity }} />
+          <div
+            className="speedlines animate-burst h-40 w-40 rounded-full"
+            style={{ opacity: glowOpacity }}
+          />
         </div>
         <div
           className={`animate-menacing absolute -translate-x-1/2 -translate-y-1/2 font-jp text-3xl font-black whitespace-nowrap ${f.color}`}
@@ -105,9 +113,7 @@ export function JojoFxProvider({ children }: { children: ReactNode }) {
       </div>
       <div className={shaking ? "animate-shake" : undefined}>{children}</div>
       {/* Foreground interactive burst layer */}
-      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
-        {renderFx(fx)}
-      </div>
+      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">{renderFx(fx)}</div>
     </FxContext.Provider>
   );
 }
