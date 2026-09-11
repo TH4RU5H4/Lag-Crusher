@@ -76,6 +76,7 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/release-key.jks
           ls -la $GITHUB_WORKSPACE/release-key.jks
+          file $GITHUB_WORKSPACE/release-key.jks
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2"
       - name: Init Android project
@@ -87,13 +88,47 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: cargo tauri android build
+      - name: Sign APK with apksigner
+        run: |
+          UNSIGNED_APK=$(find src-tauri/gen/android -name "*-unsigned.apk" | head -1)
+          echo "Found unsigned APK: $UNSIGNED_APK"
+          KEYSTORE_PATH="${{ github.workspace }}/release-key.jks"
+          KEYSTORE_PASSWORD="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          KEY_ALIAS="${{ secrets.ANDROID_KEY_ALIAS }}"
+          KEY_PASSWORD="${{ secrets.ANDROID_KEY_PASSWORD }}"
+
+          # Create build-tools path
+          BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -1)
+          echo "Using build-tools: $BUILD_TOOLS"
+          APKSIGNER="$BUILD_TOOLS/apksigner"
+
+          # Zipalign first
+          ZIPALIGN="$BUILD_TOOLS/zipalign"
+          ALIGNED_APK=$(echo "$UNSIGNED_APK" | sed 's/-unsigned/-aligned/')
+          "$ZIPALIGN" -f 4 "$UNSIGNED_APK" "$ALIGNED_APK"
+          echo "Aligned APK: $ALIGNED_APK"
+
+          # Sign with apksigner
+          SIGNED_APK=$(echo "$UNSIGNED_APK" | sed 's/-unsigned//')
+          "$APKSIGNER" sign --ks "$KEYSTORE_PATH" --ks-pass "pass:$KEYSTORE_PASSWORD" --ks-key-alias "$KEY_ALIAS" --key-pass "pass:$KEY_PASSWORD" --out "$SIGNED_APK" "$ALIGNED_APK"
+          echo "Signed APK: $SIGNED_APK"
+
+          # Verify
+          "$APKSIGNER" verify --verbose "$SIGNED_APK"
+          ls -la "$SIGNED_APK"
+      - name: Prepare release artifacts
+        run: |
+          mkdir -p release-artifacts
+          SIGNED_APK=$(find src-tauri/gen/android -name "*-release.apk" ! -name "*unsigned*" | head -1)
+          cp "$SIGNED_APK" release-artifacts/LagCrusher.apk
+          AAB=$(find src-tauri/gen/android -name "*.aab" | head -1)
+          cp "$AAB" release-artifacts/LagCrusher.aab
+          ls -la release-artifacts/
       - name: Upload Android artifacts
         uses: actions/upload-artifact@v4
         with:
           name: android
-          path: |
-            src-tauri/gen/android/app/build/outputs/apk/**/*.apk
-            src-tauri/gen/android/app/build/outputs/bundle/**/*.aab
+          path: release-artifacts/
 
   publish:
     name: Publish GitHub release
