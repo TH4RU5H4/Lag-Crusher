@@ -74,14 +74,15 @@ jobs:
           rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
       - name: Decode keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release-key.jks
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/release-key.jks
+          ls -la $GITHUB_WORKSPACE/release-key.jks
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2"
       - name: Init Android project
         run: cargo tauri android init
       - name: Build Android APK
         env:
-          ANDROID_KEYSTORE_PATH: release-key.jks
+          ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/release-key.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
