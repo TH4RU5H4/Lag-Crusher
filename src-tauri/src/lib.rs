@@ -13,6 +13,7 @@ pub fn run() {
             commands::stop_crusher,
             commands::get_crusher_state,
             commands::update_notification,
+            commands::ping_url,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

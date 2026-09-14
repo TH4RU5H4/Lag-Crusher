@@ -18,6 +18,8 @@ tauri-plugin-opener = "2"
 tauri-plugin-notification = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+reqwest = { version = "0.12", features = ["rustls-tls"], default-features = false }
+tokio = { version = "1", features = ["rt", "time"] }
 crusher-android = { path = "../plugins/crusher-android" }
 
 [profile.release]

@@ -58,3 +58,29 @@ pub fn update_notification(app: tauri::AppHandle, latency: String, ping_count: S
     }
     Ok(())
 }
+
+#[tauri::command]
+pub async fn ping_url(url: String) -> Result<u64, String> {
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(5))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let cache_bust = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or(0);
+    let separator = if url.contains('?') { "&" } else { "?" };
+    let cache_busted_url = format!("{url}{separator}_z={cache_bust}");
+
+    let start = std::time::Instant::now();
+    client
+        .get(&cache_busted_url)
+        .header("Cache-Control", "no-cache")
+        .header("Pragma", "no-cache")
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(start.elapsed().as_millis() as u64)
+}
