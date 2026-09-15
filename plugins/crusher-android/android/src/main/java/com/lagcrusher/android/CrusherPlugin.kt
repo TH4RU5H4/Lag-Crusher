@@ -6,10 +6,11 @@ import android.os.Build
 import app.tauri.annotation.Command
 import app.tauri.annotation.TauriPlugin
 import app.tauri.plugin.Invoke
+import app.tauri.plugin.JSObject
 import app.tauri.plugin.Plugin
 
 @TauriPlugin
-class CrusherPlugin(activity: Activity) : Plugin(activity) {
+class CrusherPlugin(private val activity: Activity) : Plugin(activity) {
 
     @Command
     fun startService(invoke: Invoke) {
@@ -46,9 +47,10 @@ class CrusherPlugin(activity: Activity) : Plugin(activity) {
     @Command
     fun updateNotification(invoke: Invoke) {
         try {
-            val latency = invoke.getString("latency")
+            val args: JSObject = invoke.getArgs()
+            val latency = args.getString("latency")
                 ?: return invoke.reject("missing argument: latency")
-            val pingCount = invoke.getString("pingCount")
+            val pingCount = args.getString("pingCount")
                 ?: return invoke.reject("missing argument: pingCount")
             CrusherService.updateNotification(activity, latency, pingCount)
             invoke.resolve()
