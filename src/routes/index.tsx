@@ -4,7 +4,36 @@ import { JojoFxProvider, useDramatic, useJojoFx } from "@/lib/jojo-fx";
 import { JojoSelect, type Option } from "@/components/JojoSelect";
 import { calcAverage, calcLoss, connectionQuality, QUALITY_LABELS } from "@/lib/stats";
 import { pingWithFallback } from "@/lib/ping";
-import { invoke } from "@tauri-apps/api/core";
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+  removeActive,
+} from "@tauri-apps/plugin-notification";
+
+const NOTIF_ID = 1337;
+
+async function ensureNotificationPermission(): Promise<boolean> {
+  let granted = await isPermissionGranted();
+  if (!granted) {
+    const result = await requestPermission();
+    granted = result === "granted";
+  }
+  return granted;
+}
+
+function showNotification(latency: string, pingCount: string) {
+  sendNotification({
+    id: NOTIF_ID,
+    title: "Lag Crusher Active",
+    body: `Latency: ${latency}ms · Pings: ${pingCount}`,
+    ongoing: true,
+  });
+}
+
+function dismissNotification() {
+  removeActive([{ id: NOTIF_ID }]).catch(() => {});
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -118,10 +147,8 @@ function PingerScreen() {
       const id = ++seq.current;
       setBeats((prev) => [{ id, ms, at: new Date().toLocaleTimeString() }, ...prev.slice(0, 24)]);
       setCount((c) => c + 1);
-      invoke("plugin:crusher-android|updateNotification", {
-        latency: ms === null ? "LOST" : String(ms),
-        pingCount: String(seq.current),
-      }).catch(() => {});
+      const latency = ms === null ? "LOST" : String(ms);
+      showNotification(latency, String(seq.current));
       timer.current = setTimeout(loop, Number(intervalRef.current));
     };
 
@@ -130,7 +157,7 @@ function PingerScreen() {
     return () => {
       alive = false;
       if (timer.current) clearTimeout(timer.current);
-      invoke("plugin:crusher-android|stopService").catch(() => {});
+      dismissNotification();
     };
   }, [running, getTargets]);
 
@@ -236,19 +263,20 @@ function PingerScreen() {
             <button
               type="button"
               disabled={!target}
-              onClick={(e) => {
+              onClick={async (e) => {
                 drama(e, { text: running ? "やれやれだぜ" : "ゴゴゴゴ", shake: true });
-                // Haptic feedback — instant tactile confirmation on start/stop
-                if (navigator.vibrate) {
-                  navigator.vibrate(running ? [50, 100, 50] : 100);
-                }
                 const next = !running;
-                setRunning(next);
                 if (next) {
-                  invoke("plugin:crusher-android|startService").catch(() => {});
+                  // Haptic feedback — vibration on start
+                  if (navigator.vibrate) navigator.vibrate(200);
+                  await ensureNotificationPermission();
+                  showNotification("...", "0");
                 } else {
-                  invoke("plugin:crusher-android|stopService").catch(() => {});
+                  // Haptic feedback — double-tap vibration on stop
+                  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                  dismissNotification();
                 }
+                setRunning(next);
               }}
               className={`relative z-10 flex h-44 w-44 flex-col items-center justify-center rounded-full border-[5px] border-black text-center transition-transform active:scale-90 disabled:opacity-40 ${
                 running ? "bg-gold" : "bg-magenta"
