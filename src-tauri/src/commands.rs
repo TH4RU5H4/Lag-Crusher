@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::sync::OnceLock;
 use tauri::Manager;
 
 #[tauri::command]
@@ -59,12 +60,20 @@ pub fn update_notification(app: tauri::AppHandle, latency: String, ping_count: S
     Ok(())
 }
 
+fn get_client() -> Result<&'static reqwest::Client, String> {
+    static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
+    CLIENT
+        .get_or_try_init(|| {
+            reqwest::Client::builder()
+                .timeout(std::time::Duration::from_secs(5))
+                .build()
+        })
+        .map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 pub async fn ping_url(url: String) -> Result<u64, String> {
-    let client = reqwest::Client::builder()
-        .timeout(std::time::Duration::from_secs(5))
-        .build()
-        .map_err(|e| e.to_string())?;
+    let client = get_client()?;
 
     let cache_bust = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
