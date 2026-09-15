@@ -238,6 +238,10 @@ function PingerScreen() {
               disabled={!target}
               onClick={(e) => {
                 drama(e, { text: running ? "やれやれだぜ" : "ゴゴゴゴ", shake: true });
+                // Haptic feedback — instant tactile confirmation on start/stop
+                if (navigator.vibrate) {
+                  navigator.vibrate(running ? [50, 100, 50] : 100);
+                }
                 const next = !running;
                 setRunning(next);
                 if (next) {
