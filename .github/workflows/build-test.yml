@@ -17,6 +17,8 @@ jobs:
           java-version: 17
       - name: Setup Android SDK
         run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "ndk;27.0.12077973"
       - uses: oven-sh/setup-bun@v2
