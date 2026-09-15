@@ -118,7 +118,7 @@ function PingerScreen() {
       const id = ++seq.current;
       setBeats((prev) => [{ id, ms, at: new Date().toLocaleTimeString() }, ...prev.slice(0, 24)]);
       setCount((c) => c + 1);
-      invoke("update_notification", {
+      invoke("plugin:crusher-android|updateNotification", {
         latency: ms === null ? "LOST" : String(ms),
         pingCount: String(seq.current),
       }).catch(() => {});
@@ -130,7 +130,7 @@ function PingerScreen() {
     return () => {
       alive = false;
       if (timer.current) clearTimeout(timer.current);
-      invoke("stop_crusher").catch(() => {});
+      invoke("plugin:crusher-android|stopService").catch(() => {});
     };
   }, [running, getTargets]);
 
@@ -245,9 +245,9 @@ function PingerScreen() {
                 const next = !running;
                 setRunning(next);
                 if (next) {
-                  invoke("start_crusher").catch(() => {});
+                  invoke("plugin:crusher-android|startService").catch(() => {});
                 } else {
-                  invoke("stop_crusher").catch(() => {});
+                  invoke("plugin:crusher-android|stopService").catch(() => {});
                 }
               }}
               className={`relative z-10 flex h-44 w-44 flex-col items-center justify-center rounded-full border-[5px] border-black text-center transition-transform active:scale-90 disabled:opacity-40 ${
