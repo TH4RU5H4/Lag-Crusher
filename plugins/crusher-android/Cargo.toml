@@ -3,6 +3,7 @@ name = "crusher-android"
 version = "0.1.0"
 edition = "2021"
 description = "Tauri plugin for Lag Crusher Android services"
+links = "crusher-android"
 
 [lib]
 crate-type = ["staticlib", "cdylib", "rlib"]
